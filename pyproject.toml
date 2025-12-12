@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "academic-flow"
+version = "BETA"
+description = "API acadêmica com FastAPI, Polars e Fluxograma de Pré-requisitos"
+authors = [
+    { name = "Bernardo de Castro", email = "bernardocmfgomes@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.9"
+
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "polars",
+    "pydantic"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "httpx"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

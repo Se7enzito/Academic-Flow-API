@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyc
 
 # Ignorar arquivos temporários do sistema
 .DS_Store
@@ -14,18 +15,12 @@ config.json
 *.key
 *.pem
 *.crt
+*.egg-info/
 
 # Ignorar configurações de IDEs
 .idea/
 .vscode/
 
-# Ignorar sessões Flask
-flask_session/
-
 # Ignorar ambientes virtuais
 venv/
 .venv/
-
-.dockerignore
-Dockerfile
-pyproject.toml

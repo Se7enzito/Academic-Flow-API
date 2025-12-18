@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 
@@ -11,6 +12,11 @@ from backend.api.fluxograma import router as fluxograma_router
 from backend.api.data_materias import router as data_materias_router
 from backend.api.atividades import router as atividades_router
 from backend.api.boca import router as boca_router
+
+from backend.core.database import engine, Base
+from backend.models import aluno_materia
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Academic Flow API",
@@ -30,6 +36,19 @@ app = FastAPI(
     Um projeto de ALUNOS para ALUNOS.
     """,
     version="BETA"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+        "http://127.0.0.1:5000",
+        "http://localhost:5000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.state.limiter = limiter

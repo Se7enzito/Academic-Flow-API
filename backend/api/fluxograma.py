@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
 import polars as pl
+from sqlalchemy.orm import Session
+from datetime import date
 
+from backend.core.database import get_db
 from backend.core.lazy_loader import LazyLoader
 from backend.core.grafo import coletar_prerequisitos
+from backend.models.aluno_materia import AlunoMateria
 
 router = APIRouter(prefix="/fluxograma", tags=["Fluxograma"])
 
@@ -10,19 +14,49 @@ router = APIRouter(prefix="/fluxograma", tags=["Fluxograma"])
 def fluxograma():
     materias = LazyLoader.materias()
     prereqs = LazyLoader.prerequisitos()
+    materias_semestre = LazyLoader.materias_semestre()
+
+    semestre_df = (
+        materias_semestre
+        .explode("materias")
+        .rename({"materias": "codigo"})
+    )
 
     df = (
-        prereqs
-        .join(materias, left_on="materia", right_on="codigo")
-        .rename({"nome": "materia_nome"})
-        .join(materias, left_on="pre_requisito", right_on="codigo")
-        .rename({"nome": "prereq_nome"})
-        .group_by(["materia", "materia_nome"])
+        materias
+        .select(["codigo", "nome"])
+        .join(
+            semestre_df,
+            on="codigo",
+            how="left"
+        )
+        .join(
+            prereqs,
+            left_on="codigo",
+            right_on="materia",
+            how="left"
+        )
+        .join(
+            materias.select(["codigo", "nome"]),
+            left_on="pre_requisito",
+            right_on="codigo",
+            how="left"
+        )
+        .select([
+            pl.col("codigo").alias("id"),
+            pl.col("nome").alias("nome"),
+            pl.col("semestre"),
+            pl.col("pre_requisito").alias("prereq_id"),
+            pl.col("nome_right").alias("prereq_nome"),
+        ])
+        .group_by(["id", "nome", "semestre"])
         .agg(
             pl.struct(
-                pl.col("pre_requisito").alias("codigo"),
+                pl.col("prereq_id").alias("id"),
                 pl.col("prereq_nome").alias("nome")
-            ).alias("pre_requisitos")
+            )
+            .filter(pl.col("prereq_id").is_not_null())
+            .alias("pre_requisitos")
         )
         .collect()
     )
@@ -48,10 +82,18 @@ def requisitos_completos(codigo: str = Query(...)):
             "pre_requisitos": []
         }
         
+    materias_semestre_df = (
+        LazyLoader.materias_semestre()
+        .explode("materias")
+        .rename({"materias": "codigo"})
+        .collect()
+    )
+    
     resultado = (
         materias_df
+        .join(materias_semestre_df, on="codigo", how="left")
         .filter(pl.col("codigo").is_in(list(todos)))
-        .select(["codigo", "nome"])
+        .select(["codigo", "nome", "semestre"])
         .to_dicts()
     )
     
@@ -60,6 +102,81 @@ def requisitos_completos(codigo: str = Query(...)):
         "quantidade": len(resultado),
         "pre_requisitos": resultado
     }
+
+@router.post("/progresso")
+def progresso_aluno(
+    aluno_id: int,
+    db: Session = Depends(get_db)
+):
+    registros = (
+        db.query(AlunoMateria)
+        .filter_by(aluno_id=aluno_id, concluida=True)
+        .all()
+    )
+
+    materias_concluidas = [
+        registro.materia_codigo for registro in registros
+    ]
+
+    return {
+        "aluno_id": aluno_id,
+        "materias_concluidas": materias_concluidas,
+        "quantidade": len(materias_concluidas)
+    }
+
+@router.post("/concluir")
+def concluir_materia(
+    aluno_id: int,
+    materia_codigo: str,
+    db: Session = Depends(get_db)
+):
+    registro = (
+        db.query(AlunoMateria)
+        .filter_by(
+            aluno_id=aluno_id,
+            materia_codigo=materia_codigo
+        )
+        .first()
+    )
+
+    if not registro:
+        registro = AlunoMateria(
+            aluno_id=aluno_id,
+            materia_codigo=materia_codigo,
+            concluida=True,
+            data_conclusao=date.today()
+        )
+        db.add(registro)
+    else:
+        registro.concluida = True
+        registro.data_conclusao = date.today()
+
+    db.commit()
+    return {"status": "ok"}
+
+@router.post("/desmarcar")
+def desmarcar_materia(
+    aluno_id: int,
+    materia_codigo: str,
+    db: Session = Depends(get_db)
+):
+    registro = (
+        db.query(AlunoMateria)
+        .filter_by(
+            aluno_id=aluno_id,
+            materia_codigo=materia_codigo
+        )
+        .first()
+    )
+
+    if not registro:
+        return {"status": "nao_existe"}
+
+    registro.concluida = False
+    registro.data_conclusao = None
+
+    db.commit()
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     pass

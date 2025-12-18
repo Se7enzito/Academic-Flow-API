@@ -2,7 +2,7 @@ import os
 import polars as pl
 
 from backend.config.paths import PARQUET_DIR
-from backend.data.materias_data import NOMES_MATERIAS, MATERIAS_ENUMERADAS, FLUXOGRAMA_MATERIAS
+from backend.data.materias_data import NOMES_MATERIAS, MATERIAS_ENUMERADAS, FLUXOGRAMA_MATERIAS, MATERIAS_SEMESTRE
 
 def gerar_data() -> None:
     os.makedirs(PARQUET_DIR, exist_ok=True)
@@ -20,5 +20,10 @@ def gerar_data() -> None:
 
     pl.DataFrame(rows).write_parquet(os.path.join(PARQUET_DIR, "prerequisitos.parquet"))
     
+    pl.DataFrame({
+        "semestre": list(MATERIAS_SEMESTRE.keys()),
+        "materias": [MATERIAS_SEMESTRE[s] for s in MATERIAS_SEMESTRE.keys()]
+    }).write_parquet(os.path.join(PARQUET_DIR, "materias_semestre.parquet"))
+    
 if __name__ == '__main__':
-    gerar_data()
+    pass

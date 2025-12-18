@@ -16,5 +16,9 @@ class LazyLoader:
     def notas() -> pl.LazyFrame:
         return pl.scan_parquet(os.path.join(PARQUET_DIR, "notas.parquet"))
     
+    @staticmethod
+    def materias_semestre() -> pl.LazyFrame:
+        return pl.scan_parquet(os.path.join(PARQUET_DIR, "materias_semestre.parquet"))
+    
 if __name__ == '__main__':
     pass

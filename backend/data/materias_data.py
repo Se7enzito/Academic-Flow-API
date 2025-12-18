@@ -4,8 +4,16 @@ NOMES_MATERIAS = {
     'atividades_complementares': 'Atividades Complementares',
     'formacao_extensao': 'Formação em Extensão',
     'tcc': 'Trabalho de Conclusão de Curso',
-    'eletiva': 'Eletiva',
-    'optativa': 'Optativa',
+    'eletiva_1': 'Eletiva',
+    'optativa_1': 'Optativa',
+    'eletiva_2': 'Eletiva',
+    'optativa_2': 'Optativa',
+    'optativa_3': 'Optativa',
+    'optativa_4': 'Optativa',
+    'eletiva_3': 'Eletiva',
+    'optativa_5': 'Optativa',
+    'optativa_6': 'Optativa',
+    'eletiva_4': 'Eletiva',
     
     # 1° Semestre
     'icc': 'Introdução a Ciência da Computação',
@@ -65,8 +73,8 @@ MATERIAS_ENUMERADAS = {
     0: 'atividades_complementares',
     1: 'formacao_extensao',
     2: 'tcc',
-    3: 'eletiva',
-    4: 'optativa',
+    3: 'eletiva_1',
+    4: 'optativa_1',
     5: 'icc',
     6: 'logica',
     7: 'matI',
@@ -103,7 +111,27 @@ MATERIAS_ENUMERADAS = {
     38: 'oficina_software',
     39: 'redes_computadores',
     40: 'computadores_sociedade',
-    41: 'grafos'
+    41: 'grafos',
+    42: 'eletiva_2',
+    43: 'optativa_2',
+    44: 'optativa_3',
+    45: 'optativa_4',
+    46: 'eletiva_3',
+    47: 'optativa_5',
+    48: 'optativa_6',
+    49: 'eletiva_4'
+}
+
+MATERIAS_SEMESTRE = {
+    1: ['icc', 'logica', 'matI', 'algoritmos', 'labI'],
+    2: ['e_dados', 'labII', 'ga', 'lgpa', 'sistemas_logicos', 'matII'],
+    3: ['arquiteturaI', 'lab_si', 'mat_discreta', 'matIII', 'grafos', 'p_modular'],
+    4: ['algebra', 'analise_software', 'arquiteturaII', 'estatistica', 'analise_algoritmos', 'eletiva_1'],
+    5: ['banco_dados', 'calculo_numerico', 'conceitos_linguagens', 'ia', 'teoria_linguagens', 'eletiva_2'],
+    6: ['computacao_grafica', 'eng_software', 'ihc', 'pesquisa_operacional', 'so'],
+    7: ['compiladores', 'metodologia_cientifica', 'oficina_software', 'redes_computadores', 'optativa_1'],
+    8: ['optativa_2', 'optativa_3', 'optativa_4', 'eletiva_3'],
+    9: ['optativa_5', 'optativa_6', 'eletiva_4', 'computadores_sociedade']
 }
 
 # Dicionário de pré-requisitos
@@ -137,7 +165,7 @@ FLUXOGRAMA_MATERIAS = {
     'arquiteturaII': ['arquiteturaI'],
     'estatistica': ['matII'],
     'analise_algoritmos': ['grafos'],
-    'eletiva': [],
+    'eletiva_1': [],
     
     # 5° Semestre
     'banco_dados': ['p_modular'],
@@ -145,7 +173,7 @@ FLUXOGRAMA_MATERIAS = {
     'conceitos_linguagens': ['p_modular'],
     'ia': ['grafos', 'mat_discreta'],
     'teoria_linguagens': ['e_dados', 'mat_discreta'],
-    'eletiva': [],
+    'eletiva_2': [],
     
     # 6° Semestre
     'computacao_grafica': ['e_dados', 'ga', 'algebra'],
@@ -159,18 +187,18 @@ FLUXOGRAMA_MATERIAS = {
     'metodologia_cientifica': ['banco_dados', 'teoria_linguagens', 'algebra', 'arquiteturaI', 'lgpa'],
     'oficina_software': ['eng_software'],
     'redes_computadores': ['arquiteturaII'],
-    'optativa': [],
+    'optativa_1': [],
     
     # 8° Semestre
-    'optativa': [],
-    'optativa': [],
-    'optativa': [],
-    'eletiva': [],
+    'optativa_2': [],
+    'optativa_3': [],
+    'optativa_4': [],
+    'eletiva_3': [],
     
     # 9° Semestre
-    'optativa': [],
-    'optativa': [],
-    'eletiva': [],
+    'optativa_5': [],
+    'optativa_6': [],
+    'eletiva_4': [],
     'computadores_sociedade': ['metodologia_cientifica']
 }
 

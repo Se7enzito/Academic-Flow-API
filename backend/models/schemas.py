@@ -12,7 +12,7 @@ class RegisterRequest(BaseModel):
     username: str
     password: str
     
-class RegisterRequest(BaseModel):
+class RegisterAdminRequest(BaseModel):
     username: str
     password: str
     role: str

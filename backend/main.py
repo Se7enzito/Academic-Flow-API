@@ -15,7 +15,6 @@ from backend.api.atividades import router as atividades_router
 from backend.api.boca import router as boca_router
 
 from backend.core.database import engine, Base
-from backend.models import aluno_materia
 
 Base.metadata.create_all(bind=engine)
 

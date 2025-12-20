@@ -6,11 +6,12 @@ build-backend = "setuptools.build_meta"
 name = "academic-flow"
 version = "0.1.0"
 description = "API acadêmica com FastAPI, autenticação JWT, Polars e fluxograma de pré-requisitos"
+readme = "README.md"
+requires-python = ">=3.9"
+
 authors = [
     { name = "Bernardo de Castro", email = "bernardocmfgomes@gmail.com" }
 ]
-readme = "README.md"
-requires-python = ">=3.9"
 
 dependencies = [
     # Web framework
@@ -24,6 +25,7 @@ dependencies = [
 
     # Banco de dados
     "sqlalchemy==2.0.45",
+    "psycopg2-binary==2.9.11",
 
     # Rate limit
     "slowapi==0.1.9",

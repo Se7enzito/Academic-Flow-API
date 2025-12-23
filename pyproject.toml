@@ -14,29 +14,17 @@ authors = [
 ]
 
 dependencies = [
-    # Web framework
     "fastapi==0.115.6",
     "uvicorn[standard]==0.34.0",
-
-    # Autenticação e segurança
     "python-jose[cryptography]==3.5.0",
     "passlib[bcrypt]==1.7.4",
     "bcrypt<5",
-
-    # Banco de dados
     "sqlalchemy==2.0.45",
     "psycopg2-binary==2.9.11",
-
-    # Rate limit
     "slowapi==0.1.9",
     "limits>=2.3",
-
-    # Configuração
     "python-dotenv==1.0.1",
-
-    # Dados
-    "polars==1.8.2"
-
+    "polars==1.8.2",
     "brutils==2.2.0"
 ]
 

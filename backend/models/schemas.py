@@ -4,6 +4,9 @@ class PodeCursarRequest(BaseModel):
     aluno_id: int
     materia: str
 
+class PodeCursarAlunoRequest(BaseModel):
+    materia: str
+
 class LoginRequest(BaseModel):
     username: str
     password: str

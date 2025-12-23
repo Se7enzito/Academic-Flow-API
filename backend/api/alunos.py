@@ -3,9 +3,15 @@ from sqlalchemy.orm import Session
 
 from backend.core.database import get_db
 from backend.models.user import User
-from backend.models.schemas import PodeCursarRequest
+from backend.models.schemas import (
+    PodeCursarRequest,
+    PodeCursarAlunoRequest
+)
 from backend.core.regras import RegrasAcademicas
-from backend.core.security import require_role
+from backend.core.security import (
+    require_role,
+    get_current_user
+)
 
 router = APIRouter(
     prefix="/alunos",
@@ -14,14 +20,36 @@ router = APIRouter(
 
 @router.post(
     "/pode-cursar",
-    dependencies=[Depends(require_role("aluno", "monitor", "admin"))]
+    dependencies=[Depends(require_role("monitor", "admin"))]
 )
-def pode_cursar(data: PodeCursarRequest):
+def pode_cursar(
+    data: PodeCursarRequest,
+    current_user: User = Depends(get_current_user)
+):
     regras = RegrasAcademicas()
+    
+    aluno_id = current_user.id
+    
+    if data.aluno_id:
+        aluno_id = data.aluno_id
+    
     return {
-        "pode_cursar": regras.pode_cursar(data.aluno_id, data.materia)
+        "pode_cursar": regras.pode_cursar(aluno_id, data.materia)
     }
 
+@router.post(
+    "/pode-cursar",
+    dependencies=[Depends(require_role("aluno"))]
+)
+def pode_cursar(
+    data: PodeCursarAlunoRequest,
+    current_user: User = Depends(get_current_user)
+):
+    regras = RegrasAcademicas()
+    
+    return {
+        "pode_cursar": regras.pode_cursar(current_user.id, data.materia)
+    }
 @router.get(
     "/listar-alunos",
     dependencies=[Depends(require_role("admin"))]

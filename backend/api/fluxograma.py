@@ -6,7 +6,9 @@ from datetime import date
 from backend.core.database import get_db
 from backend.core.lazy_loader import LazyLoader
 from backend.core.grafo import coletar_prerequisitos
+from backend.core.security import get_current_user
 from backend.models.aluno_materia import AlunoMateria
+from backend.models.user import User
 
 router = APIRouter(prefix="/fluxograma", tags=["Fluxograma"])
 
@@ -105,9 +107,11 @@ def requisitos_completos(codigo: str = Query(...)):
 
 @router.post("/progresso")
 def progresso_aluno(
-    aluno_id: int,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    aluno_id = current_user.id
+    
     registros = (
         db.query(AlunoMateria)
         .filter_by(aluno_id=aluno_id, concluida=True)
@@ -126,10 +130,12 @@ def progresso_aluno(
 
 @router.post("/concluir")
 def concluir_materia(
-    aluno_id: int,
     materia_codigo: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    aluno_id = current_user.id
+    
     registro = (
         db.query(AlunoMateria)
         .filter_by(
@@ -156,10 +162,12 @@ def concluir_materia(
 
 @router.post("/desmarcar")
 def desmarcar_materia(
-    aluno_id: int,
     materia_codigo: str,
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    aluno_id = current_user.id
+    
     registro = (
         db.query(AlunoMateria)
         .filter_by(

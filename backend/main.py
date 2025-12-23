@@ -23,14 +23,14 @@ app = FastAPI(
     summary="API para gerenciamento acadêmico e fluxograma de disciplinas",
     description="""
     API responsável por fornecer dados acadêmicos como:
-    - Sistema de Login e Autenticação [OK]
-    - Fluxograma do curso [90/100]
-    - Pré-requisitos de disciplinas [80/100]
-    - Validação de matrícula de alunos [0/100]
-    - Classificação da dificuldade das matérias [0/100]
-    - Dados sobre as matérias [0/100]
-    - Gerar listas de atividades [0/100]
-    - Resolver exercícios da plataforma BOCA [0/100]
+    - Sistema de Login e Autenticação
+    - Fluxograma do curso
+    - Pré-requisitos de disciplinas
+    - Validação de matrícula de alunos
+    - Classificação da dificuldade das matérias
+    - Dados sobre as matérias
+    - Gerar listas de atividades
+    - Resolver exercícios da plataforma BOCA
     
     Desenvolvida para o projeto Academic Flow.
     

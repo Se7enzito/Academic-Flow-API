@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from backend.core.database import get_db
@@ -19,7 +19,7 @@ router = APIRouter(
 )
 
 @router.get(
-    "/listar-alunos",
+    "/listar-alunos", status_code=status.HTTP_200_OK,
     summary="Listar todos os alunos",
     description="Retorna a lista de todos os alunos cadastrados",
     dependencies=[Depends(require_role("admin"))]
@@ -36,7 +36,7 @@ def listar_alunos(
     return {"alunos": registros}
 
 @router.post(
-    "/pode-cursar",
+    "/pode-cursar", status_code=status.HTTP_200_OK,
     summary="Verificar se um aluno pode cursar uma matéria",
     description="Verifica se um aluno pode cursar uma determinada matéria",
     dependencies=[Depends(require_role("monitor", "admin"))]
@@ -57,7 +57,7 @@ def pode_cursar(
     }
 
 @router.post(
-    "/pode-cursar",
+    "/pode-cursar", status_code=status.HTTP_200_OK,
     summary="Verificar se o aluno autenticado pode cursar uma matéria",
     description="Verifica se o aluno autenticado pode cursar uma determinada matéria",
     dependencies=[Depends(require_role("aluno"))]

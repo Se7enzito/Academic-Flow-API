@@ -21,7 +21,7 @@ router = APIRouter(
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @router.post(
-    "/register",
+    "/register", status_code=status.HTTP_201_CREATED,
     summary="Registrar novo usuário",
     description="Registra um novo usuário",
     dependencies=[Depends(require_role("admin"))]

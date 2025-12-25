@@ -73,7 +73,7 @@ def login(
     }
 
 @router.post(
-    "/refresh",
+    "/refresh", status_code=status.HTTP_200_OK,
     summary="Refresh do token de acesso",
     description="Gera um novo token de acesso usando o refresh token fornecido"
 )
@@ -181,7 +181,7 @@ def register(
     }
     
 @router.post(
-    "/change-password",
+    "/change-password", status_code=status.HTTP_200_OK,
     summary="Alterar senha do usuário",
     description="Altera a senha do usuário autenticado"
 )
@@ -199,7 +199,7 @@ def change_password(
     return {"status": "senha atualizada"}
 
 @router.post(
-    "/logout",
+    "/logout", status_code=status.HTTP_200_OK,
     summary="Logout do usuário",
     description="Realiza o logout do usuário, invalidando o refresh token fornecido"
 )

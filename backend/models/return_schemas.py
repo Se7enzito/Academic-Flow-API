@@ -45,11 +45,8 @@ class Materias(BaseModel):
 class MateriasFazendo(BaseModel):
     materias: List[str]
     
-class Comentario(BaseModel):
-    id_materia: str
-    
 class Comentarios(BaseModel):
-    comentarios: Dict[Comentario]
+    comentarios: Dict[str, int]
     
 class Dificuldade(BaseModel):
     id_materia: int
@@ -57,11 +54,8 @@ class Dificuldade(BaseModel):
 class Dificuldades(BaseModel):
     dificuldades: Dict[Dificuldade]
 
-class Nota(BaseModel):
-    id_materia: int
-    
 class Notas(BaseModel): 
-    notas: Dict[Nota]
+    notas: Dict[int, int]
     
 class MateriasFaltando(BaseModel):
     materias: List[str]

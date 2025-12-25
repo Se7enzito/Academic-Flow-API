@@ -1,18 +1,22 @@
-from fastapi import APIRouter, Query, Depends
 import polars as pl
+
+from fastapi import APIRouter, Query, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from datetime import date
 
 from backend.core.database import get_db
 from backend.core.lazy_loader import LazyLoader
 from backend.core.grafo import coletar_prerequisitos
-from backend.core.security import get_current_user
+from backend.core.security import (
+    get_current_user,
+    require_role
+)
 from backend.models.aluno_materia import AlunoMateria
 from backend.models.user import User
 
 router = APIRouter(prefix="/fluxograma", tags=["Fluxograma"])
 
-@router.get("/")
+@router.get("/", status_code=status.HTTP_200_OK)
 def fluxograma():
     materias = LazyLoader.materias()
     prereqs = LazyLoader.prerequisitos()
@@ -65,7 +69,7 @@ def fluxograma():
 
     return df.to_dicts()
 
-@router.get("/requisitos-completos")
+@router.get("/requisitos-completos", status_code=status.HTTP_200_OK)
 def requisitos_completos(codigo: str = Query(...)):
     prereqs_df = LazyLoader.prerequisitos().collect()
     materias_df = LazyLoader.materias().collect()
@@ -105,7 +109,10 @@ def requisitos_completos(codigo: str = Query(...)):
         "pre_requisitos": resultado
     }
 
-@router.post("/progresso")
+@router.post(
+    "/progresso", status=status.HTTP_200_OK,
+    dependencies=[Depends(require_role("aluno"))]
+)
 def progresso_aluno(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
@@ -128,7 +135,10 @@ def progresso_aluno(
         "quantidade": len(materias_concluidas)
     }
 
-@router.post("/concluir")
+@router.post(
+    "/concluir", status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_role("aluno"))]
+)
 def concluir_materia(
     materia_codigo: str,
     current_user: User = Depends(get_current_user),
@@ -160,7 +170,10 @@ def concluir_materia(
     db.commit()
     return {"status": "ok"}
 
-@router.post("/desmarcar")
+@router.post(
+    "/desmarcar", status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_role("aluno"))]
+)
 def desmarcar_materia(
     materia_codigo: str,
     current_user: User = Depends(get_current_user),
@@ -178,7 +191,7 @@ def desmarcar_materia(
     )
 
     if not registro:
-        return {"status": "nao_existe"}
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="nao_existe")
 
     registro.concluida = False
     registro.data_conclusao = None

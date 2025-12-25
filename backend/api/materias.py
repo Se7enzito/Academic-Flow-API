@@ -81,7 +81,7 @@ def get_fazendo(
         "materias": materias_fazendo
     }
 
-@router.get(
+@router.post(
     '/marcar-fazendo', status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -115,7 +115,7 @@ def marcar_get(
     
     return {"status": "ok"}
 
-@router.get(
+@router.post(
     '/desmarcar-fazendo', status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -169,7 +169,7 @@ def get_comentarios(
     
     return comentarios
 
-@router.get(
+@router.post(
     '/adicionar-comentario', status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -202,7 +202,7 @@ def adicionar_comentario(
     
     return {"status": "ok"}
 
-@router.get(
+@router.post(
     '/deletar-comentario', status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -230,7 +230,7 @@ def deletar_comentario(
     
     return {"status": "ok"}
 
-@router.get(
+@router.post(
     '/atualizar-comentario', status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -259,7 +259,7 @@ def atualizar_comentario(
     
     return {"status": "ok"}
 
-@router.get(
+@router.post(
     '/adicionar-nota', status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -292,7 +292,7 @@ def adicionar_nota(
     
     return {"status": "ok"}
 
-@router.get(
+@router.post(
     '/deletar-nota', status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -320,7 +320,7 @@ def deletar_nota(
     
     return {"status": "ok"}
 
-@router.get(
+@router.post(
     '/atualizar-nota', status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -349,7 +349,7 @@ def atualizar_nota(
     
     return {"status": "ok"}
 
-@router.get(
+@router.post(
     '/adicionar-dificuldade', status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -382,7 +382,7 @@ def adicionar_dificuldade(
     
     return {"status": "ok"}
 
-@router.get(
+@router.post(
     '/deletar-dificuldade', status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -410,7 +410,7 @@ def deletar_dificuldade(
     
     return {"status": "ok"}
 
-@router.get(
+@router.post(
     '/atualizar-dificuldade', status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("aluno"))]
 )
@@ -438,6 +438,62 @@ def atualizar_dificuldade(
     db.commit()
     
     return {"status": "ok"}
+
+@router.get(
+    '/dificuldades', status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_role("aluno"))]
+)
+def get_dificuldades(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    aluno_id = current_user.id
+    
+    registro = (
+        db.query(DificuldadeMateria)
+        .filter_by(
+            aluno_id=aluno_id
+        )
+        .all()
+    )
+    
+    if not registro:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="não encontrado")
+    
+    dificuldades = {}
+    
+    for r in registro:
+        dificuldades[r.id_materia] = r.dificuldade    
+    
+    return dificuldades
+
+@router.get(
+    '/notas', status_code=status.HTTP_200_OK,
+    dependencies=[Depends(require_role("aluno"))]
+)
+def get_notas(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    aluno_id = current_user.id
+    
+    registro = (
+        db.query(NotaMateria)
+        .filter_by(
+            aluno_id=aluno_id
+        )
+        .all()
+    )
+    
+    if not registro:
+        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="não encontrado")
+    
+    notas = {}
+    
+    for r in registro:
+        notas[r.id_materia] = r.nota    
+    
+    return notas
 
 if __name__ == '__main__':
     pass

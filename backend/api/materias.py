@@ -108,7 +108,7 @@ def get_comentarios(
     return {"comentarios": comentarios}
 
 @router.get("/comentarios/todos", status_code=status.HTTP_200_OK)
-def get_comentarios(
+def get_todos_comentarios(
     db: Session = Depends(get_db)
 ):
     registros = db.query(ComentarioMateria).all()
@@ -134,6 +134,37 @@ def get_comentarios(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Nenhum comentário válido encontrado"
+        )
+
+    return {"comentarios": comentarios}
+
+@router.get("/comentarios/todos", status_code=status.HTTP_200_OK)
+def get_todos_comentarios_materia(
+    id_materia: int,
+    db: Session = Depends(get_db)
+):
+    registros = (
+        db.query(ComentarioMateria)
+        .filter_by(id_materia=id_materia)
+        .all()
+    )
+
+    if not registros:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Nenhum comentário encontrado para a matéria especificada"
+        )
+
+    comentarios = {}
+
+    for r in registros:
+        if r.comentario:
+            comentarios[r.id_aluno] = r.comentario
+
+    if not comentarios:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Nenhum comentário válido encontrado para a matéria especificada"
         )
 
     return {"comentarios": comentarios}

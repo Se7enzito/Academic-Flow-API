@@ -110,7 +110,7 @@ def requisitos_completos(codigo: str = Query(...)):
     }
 
 @router.post(
-    "/progresso", status=status.HTTP_200_OK,
+    "/progresso", status_code=status.HTTP_200_OK,
     dependencies=[Depends(require_role("aluno"))]
 )
 def progresso_aluno(

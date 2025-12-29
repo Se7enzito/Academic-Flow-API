@@ -75,3 +75,14 @@ class PodeCursarItem(BaseModel):
 
 class PodeCursar(BaseModel):
     pode_cursar: List[PodeCursarItem]
+    
+class ProfessorBase(BaseModel):
+    id: int
+    nome: str
+    email: str
+    departamento: str
+    disciplinas: List[int]
+    
+class ProfessoresListarReturn(BaseModel):
+    professores: List[ProfessorBase]
+

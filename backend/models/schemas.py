@@ -94,3 +94,14 @@ class AmigoResponse(BaseModel):
     amizade_id: int
     status: StatusAmizadeEnum
     amigo: UsuarioResumo
+    
+class AdicionarProfessor(BaseModel):
+    nome: str
+    email: str
+    departamento: str
+
+class AtualizarProfessor(BaseModel):
+    nome: str
+    email: str
+    departamento: str
+    disciplinas: List[int]

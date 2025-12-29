@@ -141,7 +141,7 @@ def remover_professor(
     db.delete(professor)
     db.commit()
     
-    return Status(status="Professor removido com sucesso.")
+    return
 
 if __name__ == '__main__':
     pass

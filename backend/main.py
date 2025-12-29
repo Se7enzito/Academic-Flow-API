@@ -14,6 +14,7 @@ from backend.api.materias import router as data_materias_router
 from backend.api.atividades import router as atividades_router
 from backend.api.boca import router as boca_router
 from backend.api.amigos import router as amigos_router
+from backend.api.professores import router as professores_router
 
 from backend.core.database import engine, Base
 
@@ -74,6 +75,7 @@ app.include_router(data_materias_router)
 app.include_router(atividades_router)
 app.include_router(boca_router)
 app.include_router(amigos_router)
+app.include_router(professores_router)
 
 if __name__ == '__main__':
     pass

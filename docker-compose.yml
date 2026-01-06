@@ -20,8 +20,6 @@ services:
       - postgres
     ports:
       - "8000:8000"
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
 
 volumes:
   postgres_data:

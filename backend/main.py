@@ -18,8 +18,6 @@ from backend.api.professores import router as professores_router
 
 from backend.core.database import engine, Base
 
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(
     title="Academic Flow API",
     summary="API para gerenciamento acadêmico e fluxograma de disciplinas",
@@ -66,6 +64,8 @@ async def rate_limit_handler(request, exc):
     
 @app.on_event("startup")
 def startup():
+    Base.metadata.create_all(bind=engine)
+    
     criar_admin_se_nao_existir()
 
 app.include_router(auth_router)

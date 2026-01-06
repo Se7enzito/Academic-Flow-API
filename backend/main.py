@@ -3,8 +3,10 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
+from contextlib import asynccontextmanager
 
 from backend.core.limiter import limiter
+from backend.core.database import init_db, create_tables
 from backend.data.seed import criar_admin_se_nao_existir
 
 from backend.api.auth import router as auth_router
@@ -16,27 +18,21 @@ from backend.api.boca import router as boca_router
 from backend.api.amigos import router as amigos_router
 from backend.api.professores import router as professores_router
 
-from backend.core.database import engine, Base
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    create_tables()
+    criar_admin_se_nao_existir()
+
+    yield
 
 app = FastAPI(
     title="Academic Flow API",
     summary="API para gerenciamento acadêmico e fluxograma de disciplinas",
-    description="""
-    API responsável por fornecer dados acadêmicos como:
-    - Sistema de Login e Autenticação
-    - Fluxograma do curso
-    - Pré-requisitos de disciplinas
-    - Validação de matrícula de alunos
-    - Classificação da dificuldade das matérias
-    - Dados sobre as matérias
-    - Gerar listas de atividades
-    - Resolver exercícios da plataforma BOCA
-    
-    Desenvolvida para o projeto Academic Flow.
-    
-    Um projeto de ALUNOS para ALUNOS.
-    """,
-    version="v0.1.0-BETA"
+    description="API responsável por fornecer dados acadêmicos...",
+    version="v0.1.0-BETA",
+    lifespan=lifespan
 )
 
 app.add_middleware(
@@ -61,12 +57,6 @@ async def rate_limit_handler(request, exc):
         status_code=429,
         content={"detail": "Rate limit exceeded"}
     )
-    
-@app.on_event("startup")
-def startup():
-    Base.metadata.create_all(bind=engine)
-    
-    criar_admin_se_nao_existir()
 
 app.include_router(auth_router)
 app.include_router(alunos_router)
